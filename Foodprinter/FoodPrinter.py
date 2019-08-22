@@ -1,4 +1,3 @@
-
 #!usrbinenv python
 import serial
 import time
@@ -11,7 +10,8 @@ f = open('square','r');
 # Wake up grbl
 print ("writing on serial")
 s.write(str.encode('$$\n'))
-time.sleep(2)   # Wait for grbl to initialize
+time.sleep(3)   # Wait for grbl to initialize
+s2.flushInput()
 s.flushInput()  # Flush startup text in serial input
 
 for line in f:
@@ -25,6 +25,9 @@ for line in f:
         s2.write("{}\n".format(cmd).encode())
         arduino_out = s2.readline() # Wait for arduino response with carriage return
         print('return:  ' + arduino_out.strip().decode())
+    elif target=="TIME":
+        time.sleep(float(cmd))
+        print('return:  ' + cmd)
 
 # Wait here until all commands are done
 input("Press Enter to exit and disable grbl.")
